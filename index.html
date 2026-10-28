@@ -1,0 +1,1928 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schiffe versenken XTreme</title>
+
+<style>
+:root {
+  --bg: #080b14;
+  --panel: #111827;
+  --panel2: #182235;
+  --border: #293750;
+  --blue: #38bdf8;
+  --cyan: #22d3ee;
+  --red: #fb7185;
+  --green: #4ade80;
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(ellipse at top, #172b49 0%, transparent 55%),
+    var(--bg);
+  color: var(--text);
+  font-family: Inter, system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+button, input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+  transition: .18s;
+}
+
+button:hover {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  opacity: .35;
+  cursor: not-allowed;
+  transform: none;
+}
+
+header {
+  height: 76px;
+  padding: 0 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  background: #080b14dd;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(16px);
+}
+
+.logo {
+  font-size: 20px;
+  font-weight: 1000;
+  letter-spacing: -1px;
+}
+
+.logo span {
+  color: var(--cyan);
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.icon-button {
+  position: relative;
+  background: var(--panel);
+  color: white;
+  border: 1px solid var(--border);
+  padding: 11px 15px;
+  border-radius: 12px;
+}
+
+.badge {
+  position: absolute;
+  right: -5px;
+  top: -6px;
+  background: var(--red);
+  color: white;
+  border-radius: 50%;
+  width: 19px;
+  height: 19px;
+  font-size: 11px;
+  display: grid;
+  place-items: center;
+}
+
+main {
+  max-width: 1250px;
+  margin: auto;
+  padding: 35px 22px 70px;
+}
+
+.screen {
+  display: none;
+  animation: appear .25s ease;
+}
+
+.screen.active {
+  display: block;
+}
+
+@keyframes appear {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero {
+  text-align: center;
+  padding: 55px 15px 40px;
+}
+
+.eyebrow {
+  color: var(--cyan);
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  font-weight: 800;
+  font-size: 12px;
+}
+
+h1 {
+  font-size: clamp(35px, 6vw, 68px);
+  line-height: 1.05;
+  letter-spacing: -3px;
+  margin: 18px 0;
+}
+
+h1 span {
+  color: var(--cyan);
+}
+
+.subtitle {
+  color: var(--muted);
+  max-width: 550px;
+  margin: auto;
+  line-height: 1.7;
+}
+
+.panel {
+  background: linear-gradient(145deg, #141e30, #0e1523);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.panel h2, .panel h3 {
+  margin-top: 0;
+}
+
+.section-title {
+  font-size: 23px;
+  margin: 0 0 20px;
+}
+
+.grid {
+  display: grid;
+  gap: 18px;
+}
+
+.grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.primary {
+  background: linear-gradient(110deg, #0284c7, #06b6d4);
+  color: white;
+  border: 0;
+  border-radius: 12px;
+  padding: 14px 20px;
+  font-weight: 850;
+}
+
+.secondary {
+  background: var(--panel2);
+  color: white;
+  border: 1px solid var(--border);border-radius: 12px;
+  padding: 12px 16px;
+  font-weight: 700;
+}
+
+.danger {
+  background: #451c2a;
+  border: 1px solid #7f3045;
+  color: #fecdd3;
+  border-radius: 10px;
+  padding: 9px 12px;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+input {
+  width: 100%;
+  padding: 13px 15px;
+  background: #080f1c;
+  color: white;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  outline: none;
+}
+
+input:focus {
+  border-color: var(--cyan);
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.row button {
+  flex-shrink: 0;
+}
+
+.friend {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #0c1422;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  padding: 14px;
+  margin-top: 10px;
+}
+
+.friend-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: #183750;
+  font-size: 27px;
+  flex-shrink: 0;
+}
+
+.friend-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.friend-info strong {
+  overflow-wrap: anywhere;
+}
+
+.character {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: linear-gradient(145deg, #18283e, #101522);
+  padding: 23px;
+}
+
+.character.selected {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 1px var(--cyan), 0 0 25px #22d3ee18;
+}
+
+.character-emoji {
+  font-size: 62px;
+  margin: 15px 0;
+}
+
+.character p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.ship-preview {
+  display: flex;
+  gap: 4px;
+  margin: 12px 0;
+}
+
+.ship-preview span {
+  width: 19px;
+  height: 12px;
+  border-radius: 3px;
+  background: var(--blue);
+}
+
+.ability {
+  padding: 13px;
+  border-radius: 12px;
+  background: #0b1422;
+  border: 1px solid var(--border);
+  margin-top: 10px;
+}
+
+.ability strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.ability small {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.character-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  margin-bottom: 22px;
+}
+
+.character-nav button {
+  font-size: 24px;
+  min-width: 48px;
+}
+
+.character-nav strong {
+  color: var(--muted);
+}
+
+.game-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 270px;
+  gap: 20px;
+  align-items: start;
+}
+
+.board-panel {
+  overflow: hidden;
+}
+
+.board-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.board-heading h2 {
+  margin: 0;
+  font-size: 19px;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 3px;
+  width: 100%;
+  max-width: 650px;
+  margin: auto;
+}
+
+.cell {
+  position: relative;
+  aspect-ratio: 1;
+  min-width: 0;
+  border-radius: 4px;
+  border: 1px solid #294663;
+  background: #102b46;
+  color: white;
+  padding: 0;
+  font-size: clamp(9px, 1.8vw, 17px);
+}
+
+.cell:hover:not(:disabled) {
+  background: #245273;
+  border-color: var(--cyan);
+}
+
+.cell.ship {
+  background: linear-gradient(145deg, #64748b, #334155);
+  border-color: #94a3b8;
+}
+
+.cell.hit {
+  background: #7f1d1d;
+  border-color: var(--red);
+}
+
+.cell.miss {
+  background: #172536;
+  color: #dbeafe;
+}
+
+.cell.mine {
+  background: #6b3e18;
+  border-color: #fb923c;
+}
+
+.cell.preview {
+  background: #0e7490;
+  border-color: var(--cyan);
+}
+
+.cell.invalid {
+  background: #7f1d1d;
+  border-color: var(--red);
+}
+
+.side-panel {
+  position: sticky;
+  top: 95px;
+}
+
+.stat {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.stat:last-child {
+  border-bottom: 0;
+}
+
+.stat strong {
+  color: var(--cyan);
+}
+
+.ship-list {
+  display: grid;
+  gap: 8px;
+}
+
+.ship-choice {text-align: left;
+  background: #0b1422;
+  border: 1px solid var(--border);
+  color: white;
+  padding: 13px;
+  border-radius: 11px;
+}
+
+.ship-choice.active {
+  border-color: var(--cyan);
+  background: #12334a;
+}
+
+.ship-choice.placed {
+  opacity: .5;
+}
+
+.ability-button {
+  width: 100%;
+  text-align: left;
+  margin-bottom: 9px;
+  background: #0b1422;
+  border: 1px solid var(--border);
+  color: white;
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.ability-button.active {
+  border-color: var(--cyan);
+  background: #12334a;
+}
+
+.ability-button small {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+}
+
+.status {
+  padding: 14px;
+  border: 1px solid #164e63;
+  background: #0b2935;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  color: #a5f3fc;
+  line-height: 1.5;
+}
+
+.empty {
+  text-align: center;
+  color: var(--muted);
+  padding: 24px 10px;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: #000b;
+  backdrop-filter: blur(8px);
+}
+
+.modal.open {
+  display: flex;
+}
+
+.modal-box {
+  width: 100%;
+  max-width: 540px;
+  max-height: 85vh;
+  overflow-y: auto;
+  background: #111827;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 25px;
+}
+
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-head h2 {
+  margin: 0 0 18px;
+}
+
+.modal-head button {
+  background: none;
+  color: white;
+  border: 0;
+  font-size: 25px;
+}
+
+.score {
+  font-size: 45px;
+  font-weight: 1000;
+  color: var(--cyan);
+  margin: 12px 0;
+}
+
+.rules li {
+  color: #cbd5e1;
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+footer {
+  text-align: center;
+  padding: 24px;
+  color: #64748b;
+  font-size: 12px;
+  border-top: 1px solid var(--border);
+}
+
+@media(max-width: 850px) {
+  .game-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .side-panel {
+    position: static;
+  }
+
+  .grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media(max-width: 550px) {
+  header {
+    padding: 0 12px;
+    height: 68px;
+  }
+
+  .logo {
+    font-size: 15px;
+  }
+
+  .icon-button {
+    padding: 10px;
+  }
+
+  main {
+    padding: 20px 12px 45px;
+  }
+
+  .hero {
+    padding: 35px 5px 25px;
+  }
+
+  h1 {
+    letter-spacing: -1.5px;
+  }
+
+  .panel {
+    padding: 16px;
+  }
+
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .friend {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .friend-actions {
+    width: 100%;
+  }
+
+  .friend-actions button {
+    flex: 1;
+  }
+
+  .board {
+    gap: 2px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">⚓ SCHIFFE <span>XTREME</span></div>
+
+  <div class="header-actions">
+    <button class="icon-button" onclick="openModal('invitesModal')">
+      ✉️ Einladungen
+      <span id="inviteBadge" class="badge" hidden>0</span>
+    </button>
+
+    <button class="icon-button" onclick="openModal('friendsModal')">
+      👥 Freunde
+    </button>
+  </div>
+</header>
+
+<main>
+
+<!-- HAUPTMENÜ -->
+
+<section id="home" class="screen active">
+
+  <div class="hero">
+    <div class="eyebrow">Taktik · Strategie · Multiplayer</div>
+
+    <h1>SCHIFFE<br><span>VERSENKEN XTREME</span></h1>
+
+    <p class="subtitle">
+      Wähle deinen Charakter, platziere deine Flotte
+      und besiege deine Gegner mit cleveren Fähigkeiten.
+    </p>
+  </div>
+
+  <div class="grid grid-2">
+
+    <div class="panel">
+      <h2>👤 Dein Profil</h2>
+
+      <label for="username">Benutzername</label>
+
+      <div class="row" style="margin-top:10px">
+        <input id="username" maxlength="20"
+          placeholder="Dein Benutzername">
+
+        <button class="primary" onclick="saveUsername()">
+          Speichern
+        </button>
+      </div>
+
+      <p class="muted">
+        Dein Benutzername wird auf diesem Gerät gespeichert.
+      </p>
+    </div><div class="panel">
+      <h2>⚔️ Deine nächste Schlacht</h2>
+
+      <p class="muted">
+        Fordere Freunde heraus und kämpfe um den Sieg.
+      </p>
+
+      <button class="primary" style="width:100%"
+        onclick="openModal('friendsModal')">
+        Freunde herausfordern →
+      </button>
+
+      <button class="secondary"
+        style="width:100%;margin-top:10px"
+        onclick="showScreen('rules')">
+        📖 Spielregeln
+      </button>
+    </div>
+
+  </div>
+
+
+</section>
+
+
+<!-- CHARAKTERAUSWAHL -->
+
+<section id="characters" class="screen">
+
+  <div class="eyebrow">Dein Spielstil</div>
+  <h1>Wähle deinen <span>Charakter</span></h1>
+
+  <p class="subtitle" style="margin:0 0 25px">
+    Jeder Charakter besitzt fünf Schiffe, zwei gemeinsame
+    Fähigkeiten und eine individuelle Spezialfähigkeit.
+  </p>
+
+  <div class="character-nav">
+    <button class="secondary" onclick="changeCharacter(-1)">←</button>
+    <strong id="characterCounter">1 / 6</strong>
+    <button class="secondary" onclick="changeCharacter(1)">→</button>
+  </div>
+
+  <div id="characterCard" class="character"></div>
+
+  <div class="row" style="justify-content:space-between;margin-top:22px">
+    <button class="secondary" onclick="showScreen('home')">
+      ← Zurück
+    </button>
+
+    <button class="primary" onclick="selectCharacter()">
+      Charakter auswählen →
+    </button>
+  </div>
+
+</section>
+
+
+<!-- SCHIFFE PLATZIEREN -->
+
+<section id="placement" class="screen">
+
+  <div class="eyebrow">Phase 1</div>
+  <h1>Deine <span>Flotte</span></h1>
+
+  <div class="status" id="placementStatus">
+    Wähle ein Schiff und platziere es auf deinem Spielfeld.
+  </div>
+
+  <div class="game-layout">
+
+    <div class="panel board-panel">
+      <div class="board-heading">
+        <h2>🗺️ Dein Spielfeld</h2>
+        <span id="placedCounter" class="muted">0 / 5</span>
+      </div>
+
+      <div id="placementBoard" class="board"></div>
+
+      <p class="muted">
+        Klicke ein Schiff an, um es zu drehen.
+        Klicke anschließend auf das Spielfeld, um es zu platzieren.
+      </p>
+    </div>
+
+    <aside class="panel side-panel">
+      <h2>🚢 Deine Schiffe</h2>
+
+      <div id="shipList" class="ship-list"></div>
+
+      <button class="secondary"
+        style="width:100%;margin-top:15px"
+        onclick="rotateShip()">
+        ↻ Schiff drehen
+      </button>
+
+      <button id="readyButton" class="primary"
+        style="width:100%;margin-top:12px"
+        onclick="finishPlacement()" disabled>
+        Flotte bereitstellen
+      </button>
+    </aside>
+
+  </div>
+
+</section>
+
+
+<!-- SPIEL -->
+
+<section id="game" class="screen">
+
+  <div class="eyebrow">Phase 2</div>
+  <h1>Die <span>Schlacht</span></h1>
+
+  <div class="status" id="gameStatus">
+    Die Schlacht kann beginnen.
+  </div>
+
+  <div class="game-layout">
+
+    <div class="panel board-panel">
+
+      <div class="board-heading">
+        <h2>🎯 Gegnerisches Spielfeld</h2>
+        <span id="turnLabel" class="muted">Dein Zug</span>
+      </div>
+
+      <div id="enemyBoard" class="board"></div>
+
+      <p class="muted">
+        Rote Treffer markieren getroffene Schiffsteile.Weiße Punkte markieren Fehlschüsse.
+      </p>
+
+    </div>
+
+    <aside class="panel side-panel">
+
+      <h2>📊 Gefecht</h2>
+
+      <div class="stat">
+        <span>Treffer</span>
+        <strong id="hitCount">0</strong>
+      </div>
+
+      <div class="stat">
+        <span>Fehlschüsse</span>
+        <strong id="missCount">0</strong>
+      </div>
+
+      <div class="stat">
+        <span>Versenkte Schiffe</span>
+        <strong id="sunkCount">0 / 5</strong>
+      </div>
+
+      <div class="stat">
+        <span>Fähigkeitspunkte</span>
+        <strong id="points">0</strong>
+      </div>
+
+      <h3 style="margin-top:25px">⚡ Fähigkeiten</h3>
+
+      <button class="ability-button" onclick="useAbility('mine')">
+        💣 Mine · 2 Punkte
+        <small>Platziere eine Mine auf deinem Spielfeld.</small>
+      </button>
+
+      <button class="ability-button" onclick="useAbility('radar')">
+        📡 Radar · 4 Punkte
+        <small>Untersuche ein bereits beschossenes Feld und seine Umgebung.</small>
+      </button>
+
+      <div id="specialAbility"></div>
+
+      <button class="secondary"
+        style="width:100%;margin-top:12px"
+        onclick="showScreen('rules')">
+        Spielregeln
+      </button>
+
+    </aside>
+
+  </div>
+
+</section>
+
+
+<!-- ERGEBNIS -->
+
+<section id="results" class="screen">
+
+  <div class="hero">
+    <div class="eyebrow">Gefecht beendet</div>
+    <h1>Schlacht-<span>Ergebnis</span></h1>
+
+    <div class="score" id="finalScore">0 Punkte</div>
+
+    <p class="subtitle" id="finalMessage"></p>
+  </div>
+
+  <div class="panel">
+    <h2>📊 Deine Statistiken</h2>
+
+    <div class="stat">
+      <span>Treffer</span>
+      <strong id="resultHits">0</strong>
+    </div>
+
+    <div class="stat">
+      <span>Fehlschüsse</span>
+      <strong id="resultMisses">0</strong>
+    </div>
+
+    <div class="stat">
+      <span>Versenkte Schiffe</span>
+      <strong id="resultSunk">0</strong>
+    </div>
+  </div>
+
+  <button class="primary"
+    style="width:100%"
+    onclick="showScreen('home')">
+    Zurück zum Hauptmenü
+  </button>
+
+</section>
+
+
+<!-- REGELWERK -->
+
+<section id="rules" class="screen">
+
+  <div class="eyebrow">Das Regelwerk</div>
+  <h1>Spiel-<span>regeln</span></h1>
+
+  <div class="panel">
+    <ol class="rules">
+      <li>Jeder Spieler besitzt fünf Schiffe.</li>
+      <li>Schiffe dürfen sich weder überschneiden noch berühren, auch nicht diagonal.</li>
+      <li>Die Spieler schießen abwechselnd auf das gegnerische Spielfeld.</li>
+      <li>Ein Treffer bringt drei Fähigkeitspunkte.</li>
+      <li>Ein Fehlschuss bringt einen Fähigkeitspunkt.</li>
+      <li>Das Versenken eines Schiffes bringt zusätzlich fünf Fähigkeitspunkte.</li>
+      <li>Eine Mine kostet zwei Fähigkeitspunkte.</li>
+      <li>Ein Radar kostet vier Fähigkeitspunkte.</li>
+      <li>Jeder Charakter besitzt eine eigene Spezialfähigkeit für sieben Punkte.</li>
+      <li>Gewonnen hat, wer alle gegnerischen Schiffe versenkt.</li>
+    </ol>
+  </div>
+
+  <button class="secondary" onclick="showScreen('home')">
+    ← Zurück zum Hauptmenü
+  </button>
+
+</section>
+
+</main>
+
+<footer>
+  SCHIFFE VERSENKEN XTREME · STRATEGIE IST ALLES
+</footer>
+
+
+<!-- FREUNDE -->
+
+<div id="friendsModal" class="modal">
+  <div class="modal-box">
+
+    <div class="modal-head">
+      <h2>👥 Deine Freunde</h2>
+      <button onclick="closeModal('friendsModal')">×</button>
+    </div>
+
+    <p class="muted">
+      Gib den Benutzernamen eines Spielers ein.
+    </p>
+
+    <div class="row">
+      <input id="friendInput" placeholder="Benutzername">
+      <button class="primary" onclick="addFriend()">Hinzufügen</button>
+    </div>
+
+    <div id="friendList"></div>
+
+  </div>
+</div>
+
+
+<!-- EINLADUNGEN -->
+
+<div id="invitesModal" class="modal">
+  <div class="modal-box">
+
+    <div class="modal-head">
+      <h2>✉️ Einladungen</h2><button onclick="closeModal('invitesModal')">×</button>
+    </div>
+
+    <div id="inviteList"></div>
+
+  </div>
+</div>
+
+
+<script>
+"use strict";
+
+/*
+ * SCHIFFE VERSENKEN XTREME
+ *
+ * Dies ist die Frontend-Version.
+ * Freunde und Einstellungen werden lokal gespeichert.
+ * Echte Online-Verbindungen folgen mit dem Cloudflare-Worker.
+ */
+
+const SIZE = 10;
+
+const SHIPS = [
+  { id: "carrier", name: "Flugzeugträger", size: 5 },
+  { id: "battleship", name: "Schlachtschiff", size: 4 },
+  { id: "cruiser", name: "Kreuzer", size: 3 },
+  { id: "submarine", name: "U-Boot", size: 3 },
+  { id: "destroyer", name: "Zerstörer", size: 2 }
+];
+
+const CHARACTERS = [
+  {
+    name: "Admiral Storm",
+    emoji: "⚓",
+    description: "Ein erfahrener Flottenkommandant mit ausgewogener Strategie.",
+    special: "Präzisionsschuss",
+    specialDescription: "Ein gezielter Angriff auf ein noch unbekanntes Feld.",
+    color: "#38bdf8"
+  },
+  {
+    name: "Captain Inferno",
+    emoji: "🔥",
+    description: "Ein aggressiver Kapitän, der auf Druck und Offensive setzt.",
+    special: "Doppelschlag",
+    specialDescription: "Zwei unterschiedliche Felder werden angegriffen.",
+    color: "#fb7185"
+  },
+  {
+    name: "Ghost",
+    emoji: "👻",
+    description: "Ein taktischer Spezialist für verdeckte Operationen.",
+    special: "Geistermine",
+    specialDescription: "Platziere eine besonders schwer vorhersehbare Mine.",
+    color: "#c084fc"
+  },
+  {
+    name: "Navigator",
+    emoji: "🧭",
+    description: "Ein Meister der Orientierung und Aufklärung.",
+    special: "Weitradar",
+    specialDescription: "Untersuche einen größeren Bereich des gegnerischen Feldes.",
+    color: "#4ade80"
+  },
+  {
+    name: "Titan",
+    emoji: "🛡️",
+    description: "Ein Verteidigungsexperte mit einem robusten taktischen Ansatz.",
+    special: "Schutzschild",
+    specialDescription: "Schütze ein eigenes Feld vor einem gegnerischen Treffer.",
+    color: "#fbbf24"
+  },
+  {
+    name: "Cyber Shark",
+    emoji: "🦈",
+    description: "Ein unberechenbarer Kommandant mit futuristischer Technik.",
+    special: "Sonarpuls",
+    specialDescription: "Erhalte zusätzliche Informationen über gegnerische Schiffe.",
+    color: "#22d3ee"
+  }
+];
+
+let username = localStorage.getItem("sx_username") || "";
+
+let friends = JSON.parse(
+  localStorage.getItem("sx_friends") || "[]"
+);
+
+let invitations = JSON.parse(
+  localStorage.getItem("sx_invites") || "[]"
+);
+
+let characterIndex = 0;
+let selectedCharacter = null;
+let selectedShip = SHIPS[0].id;
+let vertical = false;
+
+let myBoard = [];
+let enemyBoard = [];
+let placedShips = {};
+let shots = {};
+
+let abilityPoints = 0;
+let hits = 0;
+let misses = 0;
+let sunk = 0;
+let currentAbility = null;
+let gameFinished = false;
+
+function saveData() {
+  localStorage.setItem("sx_username", username);
+  localStorage.setItem("sx_friends", JSON.stringify(friends));
+  localStorage.setItem("sx_invites", JSON.stringify(invitations));
+}
+
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(screen => {
+    screen.classList.toggle("active", screen.id === id);
+  });
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function openModal(id) {
+  document.getElementById(id).classList.add("open");
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove("open");
+}
+
+function saveUsername() {
+  const value = document.getElementById("username")
+    .value.trim();
+
+  if (!value) {
+    alert("Bitte gib einen Benutzernamen ein.");
+    return;
+  }
+
+  if (value.length > 20) {
+    alert("Der Benutzername darf höchstens 20 Zeichen lang sein.");
+    return;
+  }
+
+  username = value;
+  saveData();
+
+  alert("Benutzername lokal gespeichert.");
+}
+
+document.getElementById("username").value = username;
+
+
+/* FREUNDE */
+
+function addFriend() {const input = document.getElementById("friendInput");
+  const name = input.value.trim();
+
+  if (!name) {
+    alert("Bitte gib einen Benutzernamen ein.");
+    return;
+  }
+
+  if (!username) {
+    alert("Speichere zuerst deinen eigenen Benutzernamen.");
+    return;
+  }
+
+  if (name.toLowerCase() === username.toLowerCase()) {
+    alert("Du kannst dich nicht selbst hinzufügen.");
+    return;
+  }
+
+  if (friends.some(f => f.name.toLowerCase() === name.toLowerCase())) {
+    alert("Dieser Benutzer steht bereits in deiner Freundesliste.");
+    return;
+  }
+
+  friends.push({
+    name,
+    status: "pending"
+  });
+
+  input.value = "";
+
+  saveData();
+  renderFriends();
+
+  alert("Freundschaftsanfrage lokal vorgemerkt. Die Online-Zustellung folgt mit dem Server.");
+}
+
+function removeFriend(name) {
+  friends = friends.filter(friend => friend.name !== name);
+  saveData();
+  renderFriends();
+}
+
+function challengeFriend(name) {
+  if (!username) {
+    alert("Speichere zuerst deinen Benutzernamen.");
+    return;
+  }
+
+  invitations.push({
+    id: crypto.randomUUID(),
+    from: username,
+    to: name,
+    type: "battle",
+    status: "pending"
+  });
+
+  saveData();
+  renderInvitations();
+
+  alert("Die Battle-Einladung wurde lokal vorgemerkt. Online-Einladungen werden anschließend über Cloudflare übertragen.");
+}
+
+function renderFriends() {
+  const list = document.getElementById("friendList");
+
+  if (!friends.length) {
+    list.innerHTML = '<div class="empty">Noch keine Freunde hinzugefügt.</div>';
+    return;
+  }
+
+  list.innerHTML = "";
+
+  friends.forEach(friend => {
+    const item = document.createElement("div");
+    item.className = "friend";
+
+    const info = document.createElement("div");
+    info.className = "friend-info";
+
+    const avatar = document.createElement("div");
+    avatar.className = "avatar";
+    avatar.textContent = "👤";
+
+    const name = document.createElement("div");
+
+    const strong = document.createElement("strong");
+    strong.textContent = friend.name;
+
+    const status = document.createElement("div");
+    status.className = "muted";
+    status.textContent =
+      friend.status === "accepted"
+        ? "Freund"
+        : "Anfrage ausstehend";
+
+    name.append(strong, status);
+    info.append(avatar, name);
+
+    const actions = document.createElement("div");
+    actions.className = "friend-actions";
+
+    if (friend.status === "accepted") {
+      const battle = document.createElement("button");
+      battle.className = "primary";
+      battle.textContent = "⚔️ Battle";
+      battle.onclick = () => challengeFriend(friend.name);
+      actions.append(battle);
+    }
+
+    const remove = document.createElement("button");
+    remove.className = "danger";
+    remove.textContent = "Entfernen";
+    remove.onclick = () => removeFriend(friend.name);
+
+    actions.append(remove);
+    item.append(info, actions);
+    list.append(item);
+  });
+}
+
+
+/* EINLADUNGEN */
+
+function renderInvitations() {
+  const list = document.getElementById("inviteList");
+  const badge = document.getElementById("inviteBadge");
+
+  const pending = invitations.filter(
+    invitation => invitation.status === "pending"
+  );
+
+  badge.hidden = pending.length === 0;
+  badge.textContent = pending.length;
+
+  if (!invitations.length) {
+    list.innerHTML = '<div class="empty">Keine Einladungen vorhanden.</div>';
+    return;
+  }
+
+  list.innerHTML = "";
+
+  invitations.forEach(invitation => {
+    const item = document.createElement("div");
+    item.className = "friend";
+
+    const info = document.createElement("div");
+    info.className = "friend-info";
+
+    const avatar = document.createElement("div");
+    avatar.className = "avatar";
+    avatar.textContent =
+      invitation.type === "battle" ? "⚔️" : "👥";
+
+    const text = document.createElement("div");const strong = document.createElement("strong");
+    strong.textContent =
+      invitation.type === "battle"
+        ? "Battle-Einladung"
+        : "Freundschaftsanfrage";
+
+    const description = document.createElement("div");
+    description.className = "muted";
+    description.textContent = "Von: " + invitation.from;
+
+    text.append(strong, description);
+    info.append(avatar, text);
+
+    const actions = document.createElement("div");
+    actions.className = "friend-actions";
+
+    if (invitation.status === "pending") {
+      const accept = document.createElement("button");
+      accept.className = "primary";
+      accept.textContent = "Annehmen";
+
+      accept.onclick = () => acceptInvitation(invitation.id);
+
+      const reject = document.createElement("button");
+      reject.className = "danger";
+      reject.textContent = "Ablehnen";
+
+      reject.onclick = () => rejectInvitation(invitation.id);
+
+      actions.append(accept, reject);
+    } else {
+      const status = document.createElement("span");
+      status.className = "muted";
+      status.textContent =
+        invitation.status === "accepted"
+          ? "Angenommen"
+          : "Abgelehnt";
+
+      actions.append(status);
+    }
+
+    item.append(info, actions);
+    list.append(item);
+  });
+}
+
+function acceptInvitation(id) {
+  const invitation = invitations.find(item => item.id === id);
+
+  if (!invitation) return;
+
+  invitation.status = "accepted";
+
+  if (invitation.type === "friend") {
+    if (!friends.some(friend => friend.name === invitation.from)) {
+      friends.push({
+        name: invitation.from,
+        status: "accepted"
+      });
+    }
+  }
+
+  saveData();
+  renderInvitations();
+  renderFriends();
+
+  if (invitation.type === "battle") {
+    closeModal("invitesModal");
+    startCharacterSelection();
+  }
+}
+
+function rejectInvitation(id) {
+  const invitation = invitations.find(item => item.id === id);
+
+  if (!invitation) return;
+
+  invitation.status = "rejected";
+
+  saveData();
+  renderInvitations();
+}
+
+
+/* CHARAKTERAUSWAHL */
+
+function startCharacterSelection() {
+  characterIndex = 0;
+  renderCharacter();
+  showScreen("characters");
+}
+
+function changeCharacter(direction) {
+  characterIndex =
+    (characterIndex + direction + CHARACTERS.length)
+    % CHARACTERS.length;
+
+  renderCharacter();
+}
+
+function renderCharacter() {
+  const character = CHARACTERS[characterIndex];
+
+  document.getElementById("characterCounter").textContent =
+    `${characterIndex + 1} / ${CHARACTERS.length}`;
+
+  const card = document.getElementById("characterCard");
+
+  card.innerHTML = `
+    <div style="color:${character.color};font-weight:800">
+      KOMMANDANT
+    </div>
+
+    <div class="character-emoji">${character.emoji}</div>
+
+    <h2>${character.name}</h2>
+
+    <p>${character.description}</p>
+
+    <h3>🚢 Flotte</h3>
+
+    ${SHIPS.map(ship => `
+      <div class="ship-preview">
+        ${Array.from({length: ship.size}, () => "<span></span>").join("")}
+        <small style="margin-left:8px">${ship.name}</small>
+      </div>
+    `).join("")}
+
+    <h3 style="margin-top:25px">⚡ Fähigkeiten</h3>
+
+    <div class="ability">
+      <strong>💣 Mine · 2 Punkte</strong>
+      <small>Platziere eine Mine auf deinem eigenen Spielfeld.</small>
+    </div>
+
+    <div class="ability">
+      <strong>📡 Radar · 4 Punkte</strong>
+      <small>Untersuche ein Feld und seine Umgebung.</small>
+    </div>
+
+    <div class="ability">
+      <strong>✨ ${character.special} · 7 Punkte</strong>
+      <small>${character.specialDescription}</small>
+    </div>
+  `;
+}
+
+function selectCharacter() {
+  selectedCharacter = CHARACTERS[characterIndex];
+
+  resetGame();
+  createPlacementBoard();
+
+  showScreen("placement");
+}
+
+
+/* SPIELBRETT */
+
+function createEmptyBoard() {
+  return Array.from({ length: SIZE }, () =>Array.from({ length: SIZE }, () => ({
+      ship: null,
+      hit: false,
+      miss: false,
+      mine: false
+    }))
+  );
+}
+
+function resetGame() {
+  myBoard = createEmptyBoard();
+  enemyBoard = createEmptyBoard();
+
+  placedShips = {};
+  shots = {};
+
+  abilityPoints = 0;
+  hits = 0;
+  misses = 0;
+  sunk = 0;
+  currentAbility = null;
+  gameFinished = false;
+  selectedShip = SHIPS[0].id;
+  vertical = false;
+
+  document.getElementById("hitCount").textContent = "0";
+  document.getElementById("missCount").textContent = "0";
+  document.getElementById("sunkCount").textContent = "0 / 5";
+  document.getElementById("points").textContent = "0";
+}
+
+function getShip(id) {
+  return SHIPS.find(ship => ship.id === id);
+}
+
+function createPlacementBoard() {
+  const board = document.getElementById("placementBoard");
+
+  board.innerHTML = "";
+
+  for (let y = 0; y < SIZE; y++) {
+    for (let x = 0; x < SIZE; x++) {
+      const cell = document.createElement("button");
+
+      cell.className = "cell";
+      cell.dataset.x = x;
+      cell.dataset.y = y;
+
+      cell.onclick = () => handlePlacement(x, y);
+
+      board.append(cell);
+    }
+  }
+
+  renderShipList();
+  updatePlacementBoard();
+}
+
+function renderShipList() {
+  const list = document.getElementById("shipList");
+
+  list.innerHTML = "";
+
+  SHIPS.forEach(ship => {
+    const button = document.createElement("button");
+
+    button.className = "ship-choice";
+
+    if (selectedShip === ship.id) {
+      button.classList.add("active");
+    }
+
+    if (placedShips[ship.id]) {
+      button.classList.add("placed");
+    }
+
+    button.innerHTML =
+      `${ship.name}<br><small>${ship.size} Felder</small>`;
+
+    button.onclick = () => {
+      if (placedShips[ship.id]) return;
+
+      selectedShip = ship.id;
+
+      renderShipList();
+      updatePlacementBoard();
+    };
+
+    list.append(button);
+  });
+}
+
+function rotateShip() {
+  vertical = !vertical;
+  updatePlacementBoard();
+}
+
+function getShipCells(ship, x, y, isVertical = vertical) {
+  return Array.from({ length: ship.size }, (_, i) => ({
+    x: x + (isVertical ? 0 : i),
+    y: y + (isVertical ? i : 0)
+  }));
+}
+
+function canPlaceShip(ship, x, y) {
+  const cells = getShipCells(ship, x, y);
+
+  for (const cell of cells) {
+    if (
+      cell.x < 0 || cell.x >= SIZE ||
+      cell.y < 0 || cell.y >= SIZE
+    ) {
+      return false;
+    }
+
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        const nx = cell.x + dx;
+        const ny = cell.y + dy;
+
+        if (
+          nx < 0 || nx >= SIZE ||
+          ny < 0 || ny >= SIZE
+        ) {
+          continue;
+        }
+
+        if (myBoard[ny][nx].ship) {
+          return false;
+        }
+      }
+    }
+  }
+
+  return true;
+}
+
+function handlePlacement(x, y) {
+  const ship = getShip(selectedShip);
+
+  if (!ship || placedShips[ship.id]) return;
+
+  if (!canPlaceShip(ship, x, y)) {
+    document.getElementById("placementStatus").textContent =
+      "Ungültige Position! Schiffe dürfen sich nicht überschneiden oder berühren.";
+
+    return;
+  }
+
+  const cells = getShipCells(ship, x, y);
+
+  cells.forEach(cell => {
+    myBoard[cell.y][cell.x].ship = ship.id;
+  });
+
+  placedShips[ship.id] = cells;
+
+  const nextShip = SHIPS.find(s => !placedShips[s.id]);
+
+  if (nextShip) {
+    selectedShip = nextShip.id;
+  }
+
+  renderShipList();
+  updatePlacementBoard();
+
+  const count = Object.keys(placedShips).length;
+
+  document.getElementById("placedCounter").textContent =
+    `${count} / ${SHIPS.length}`;
+
+  document.getElementById("readyButton").disabled =
+    count !== SHIPS.length;
+
+  document.getElementById("placementStatus").textContent =
+    count === SHIPS.length
+      ? "Deine Flotte ist bereit!"
+      : "Schiff platziert. Wähle das nächste Schiff.";
+}
+
+function updatePlacementBoard() {const cells = document.querySelectorAll("#placementBoard .cell");
+
+  cells.forEach(cell => {
+    const x = Number(cell.dataset.x);
+    const y = Number(cell.dataset.y);
+
+    cell.className = "cell";
+
+    if (myBoard[y][x].ship) {
+      cell.classList.add("ship");
+    }
+  });
+}
+
+
+/* GEFACHT */
+
+function finishPlacement() {
+  if (Object.keys(placedShips).length !== SHIPS.length) {
+    return;
+  }
+
+  /*
+   * Bis zur Online-Server-Integration ist dies eine
+   * lokale Vorschau und noch kein echtes Multiplayer-Spiel.
+   */
+
+  placeDemoEnemyShips();
+
+  createEnemyBoard();
+
+  document.getElementById("specialAbility").innerHTML = `
+    <button class="ability-button"
+      onclick="useAbility('special')">
+      ✨ ${selectedCharacter.special} · 7 Punkte
+      <small>${selectedCharacter.specialDescription}</small>
+    </button>
+  `;
+
+  document.getElementById("gameStatus").textContent =
+    "Lokaler Vorschau-Modus: Das Online-Gefecht wird mit dem Cloudflare-Server aktiviert.";
+
+  showScreen("game");
+}
+
+function placeDemoEnemyShips() {
+  enemyBoard = createEmptyBoard();
+
+  for (const ship of SHIPS) {
+    let placed = false;
+
+    for (let attempt = 0; attempt < 1000 && !placed; attempt++) {
+      const x = Math.floor(Math.random() * SIZE);
+      const y = Math.floor(Math.random() * SIZE);
+      const isVertical = Math.random() < 0.5;
+      const cells = getShipCells(ship, x, y, isVertical);
+
+      if (cells.some(cell =>
+        cell.x < 0 || cell.x >= SIZE ||
+        cell.y < 0 || cell.y >= SIZE
+      )) {
+        continue;
+      }
+
+      const valid = cells.every(cell => {
+        for (let dy = -1; dy <= 1; dy++) {
+          for (let dx = -1; dx <= 1; dx++) {
+            const nx = cell.x + dx;
+            const ny = cell.y + dy;
+
+            if (
+              nx < 0 || nx >= SIZE ||
+              ny < 0 || ny >= SIZE
+            ) continue;
+
+            if (enemyBoard[ny][nx].ship) return false;
+          }
+        }
+
+        return true;
+      });
+
+      if (!valid) continue;
+
+      cells.forEach(cell => {
+        enemyBoard[cell.y][cell.x].ship = ship.id;
+      });
+
+      placed = true;
+    }
+  }
+}
+
+function createEnemyBoard() {
+  const board = document.getElementById("enemyBoard");
+
+  board.innerHTML = "";
+
+  for (let y = 0; y < SIZE; y++) {
+    for (let x = 0; x < SIZE; x++) {
+      const cell = document.createElement("button");
+
+      cell.className = "cell";
+      cell.dataset.x = x;
+      cell.dataset.y = y;
+
+      cell.onclick = () => shoot(x, y);
+
+      board.append(cell);
+    }
+  }
+}
+
+function shoot(x, y) {
+  if (gameFinished) return;
+
+  const key = `${x},${y}`;
+
+  if (shots[key]) return;
+
+  if (currentAbility === "mine") {
+    if (abilityPoints < 2) {
+      alert("Du brauchst zwei Fähigkeitspunkte.");
+      return;
+    }
+
+    if (myBoard[y][x].ship || myBoard[y][x].mine) {
+      alert("Dieses Feld kann keine Mine aufnehmen.");
+      return;
+    }
+
+    myBoard[y][x].mine = true;
+    abilityPoints -= 2;
+    currentAbility = null;
+
+    document.getElementById("points").textContent = abilityPoints;
+
+    alert("Mine platziert. Im Online-Spiel wird sie für den Gegner verborgen.");
+
+    return;
+  }
+
+  if (currentAbility === "radar") {
+    if (abilityPoints < 4) {
+      alert("Du brauchst vier Fähigkeitspunkte.");
+      return;
+    }
+
+    if (!shots[key]) {
+      alert("Das Radar darf nur auf bereits beschossenen Feldern eingesetzt werden.");
+      return;
+    }
+
+    abilityPoints -= 4;
+    currentAbility = null;
+
+    let nearby = 0;
+
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) {
+        const nx = x + dx;
+        const ny = y + dy;
+
+        if (
+          nx >= 0 && nx < SIZE &&
+          ny >= 0 && ny < SIZE &&
+          enemyBoard[ny][nx].ship
+        ) {
+          nearby++;
+        }
+      }
+    }document.getElementById("points").textContent = abilityPoints;
+
+    alert(`Radar-Ergebnis: ${nearby} Schiffsteile im untersuchten Bereich.`);
+
+    return;
+  }
+
+  if (currentAbility === "special") {
+    if (abilityPoints < 7) {
+      alert("Du brauchst sieben Fähigkeitspunkte.");
+      return;
+    }
+
+    abilityPoints -= 7;
+    currentAbility = null;
+
+    document.getElementById("points").textContent = abilityPoints;
+  }
+
+  shots[key] = true;
+
+  const target = enemyBoard[y][x];
+
+  const cell = document.querySelector(
+    `#enemyBoard .cell[data-x="${x}"][data-y="${y}"]`
+  );
+
+  if (target.ship) {
+    target.hit = true;
+    hits++;
+    abilityPoints += 3;
+
+    cell.classList.add("hit");
+    cell.textContent = "✕";
+
+    const shipCells = enemyBoard.flat().filter(
+      square => square.ship === target.ship
+    );
+
+    const destroyed = shipCells.every(square => square.hit);
+
+    if (destroyed) {
+      sunk++;
+      abilityPoints += 5;
+    }
+
+  } else {
+    target.miss = true;
+    misses++;
+    abilityPoints++;
+
+    cell.classList.add("miss");
+    cell.textContent = "•";
+  }
+
+  document.getElementById("hitCount").textContent = hits;
+  document.getElementById("missCount").textContent = misses;
+  document.getElementById("sunkCount").textContent = `${sunk} / 5`;
+  document.getElementById("points").textContent = abilityPoints;
+
+  if (sunk === SHIPS.length) {
+    endGame();
+  }
+}
+
+function useAbility(type) {
+  if (gameFinished) return;
+
+  currentAbility = type;
+
+  if (type === "mine") {
+    alert("Wähle auf deinem eigenen Spielfeld ein Feld für die Mine. Die Online-Mechanik folgt mit dem Server.");
+    return;
+  }
+
+  if (type === "radar") {
+    alert("Wähle ein bereits beschossenes Feld auf dem gegnerischen Spielfeld.");
+    return;
+  }
+
+  if (type === "special") {
+    alert(`Spezialfähigkeit: ${selectedCharacter.special}. Wähle anschließend ein Feld.`);
+  }
+}
+
+function endGame() {
+  gameFinished = true;
+
+  document.getElementById("finalScore").textContent =
+    `${abilityPoints} Punkte`;
+
+  document.getElementById("finalMessage").textContent =
+    "Du hast alle gegnerischen Schiffe versenkt!";
+
+  document.getElementById("resultHits").textContent = hits;
+  document.getElementById("resultMisses").textContent = misses;
+  document.getElementById("resultSunk").textContent = sunk;
+
+  showScreen("results");
+}
+
+
+/* INITIALISIERUNG */
+
+renderFriends();
+renderInvitations();
+</script>
+
+</body>
+</html>
